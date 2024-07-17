@@ -1,0 +1,692 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- DataTables CSS -->
+    <link href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css" rel="stylesheet">
+    
+    <style>
+        /* Add custom styles here */
+    body {
+        height: 100vh;
+        overflow-x: hidden;
+    }
+
+    .sidebar {
+        height: 100%;
+        width: 250px;
+        position: fixed;
+        top: 0;
+        left: 0;
+        background-color: rgba(200, 155, 0, 0.9); /* Semi-transparent gold background */
+        background-image: url('static/gold.jpeg');
+        background-size: cover; /* Adjust background image size to cover */
+        background-repeat: no-repeat; /* Do not repeat the background image */
+        background-position: center; /* Center the background image */
+        box-shadow: 0 0 90px rgba(200, 180, 20, 0.5);
+    }
+
+        .top-bar {
+            border-bottom: 6px  solid black;
+            padding: 20px 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .current-time {
+            font-size: 14px;
+            color: #666;
+        }
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 150px;
+            height: auto;
+            border-radius: 50%;
+            border: 5px solid #ffd700; /* Gold border */
+            padding: 5px;
+        }
+
+
+        .sidebar a {
+            margin-top: 20px;
+            margin-left: 20px;
+            padding: 10px 20px;
+            text-decoration: none;
+            color: black;
+            display: block;
+            transition: all 0.3s ease;
+            background: linear-gradient(to right bottom, gold,brown); /* Gradient from light gold to gold */
+            border-radius: 10px; /* Rounded corners */
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow */
+        }
+
+        .sidebar a:hover {
+            background-color: #e9ecef;
+            color: #333; /* Change text color on hover */
+        }
+
+        .content {
+            margin-left: 250px;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+        }
+
+        .add-button {
+            margin-top: 20px;
+            margin-left: 20px;
+            background: linear-gradient(to right bottom, black,black); /* Gradient from light gold to gold */
+            color: white; /* Text color */
+            border: none;
+            border-radius: 20px; /* Rounded corners */
+            padding: 10px 20px; /* Padding */
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .add-button:hover {
+            box-shadow: 0 4px 6px rgba(180, 180, 0, 0.1); /* Subtle shadow on hover */
+            transform: translateY(-2px); /* Move button slightly up on hover */
+        }
+
+        /* Adjust modal width */
+        .modal-dialog {
+            max-width: 800px;
+        }
+
+        /* Style for form fields */
+        .form-group label {
+            font-weight: bold;
+        }
+
+        .form-control {
+            border-radius: 0;
+            border-color: #ccc;
+        }
+
+        /* Style for buttons */
+        .btn-primary {
+            border-radius: 20px; /* Rounded corners */
+            background-color: #ffd700; /* Gold background color */
+            border-color: #ffd700; /* Gold border color */
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background-color: #ffdf00; /* Lighter gold color on hover */
+            border-color: #ffdf00; /* Lighter gold color on hover */
+        }
+
+        .btn-secondary {
+            border-radius: 20px; /* Rounded corners */
+            background-color: #6c757d;
+            border-color: #6c757d;
+            transition: all 0.3s ease;
+        }
+
+        .btn-secondary:hover {
+            background-color: #5a6268;
+            border-color: #545b62;
+        }
+
+        /* Search bar style */
+        #searchBarWrapper {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        #searchBar {
+            border-radius: 20px; /* Rounded corners */
+            border: 2px solid #ddd; /* Light gray border */
+            padding: 10px 20px; /* Padding */
+            width: 100%;
+            transition: border-color 0.3s ease;
+            font-size: 16px;
+        }
+
+        #searchBar:focus {
+            outline: none; /* Remove default focus outline */
+            border-color:#ffdf00; /* Blue border color on focus */
+        }
+
+        #searchIcon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #999; /* Gray color for search icon */
+            transition: color 0.3s ease;
+            cursor: pointer;
+        }
+
+        #searchIcon:hover {
+            color: #555; /* Darker gray color for search icon on hover */
+        }
+
+        .required-field {
+                border-color: #dc3545 !important; /* Red border color */
+            }
+    
+        .custom-alert {
+            position: fixed;
+            top: 10px;
+            right: 10px;
+            z-index: 9999;
+            width: 300px;
+            border-radius: 5px;
+        }
+        /* Modern professional table style */
+        /* Modern professional table style */
+        .table {
+            width: 100%;
+            margin-bottom: 1rem;
+            color: #212529;
+            border-collapse: collapse;
+        }
+        
+        .table th,
+        .table td {
+            padding: 0.75rem;
+            vertical-align: top;
+            border-top: 1px solid #dee2e6;
+        }
+        
+        .table thead th {
+            vertical-align: bottom;
+            border-bottom: 2px solid #dee2e6;
+            background-color: #f8f9fa;
+        }
+        
+        .table tbody + tbody {
+            border-top: 2px solid #dee2e6;
+        }
+        
+        .table-sm th,
+        .table-sm td {
+            padding: 0.3rem;
+        }
+        
+        .table-bordered {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-bordered th,
+        .table-bordered td {
+            border: 1px solid #dee2e6;
+        }
+        
+        .table-bordered thead th,
+        .table-bordered thead td {
+            border-bottom-width: 2px;
+        }
+        
+        .table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(0, 0, 0, 0.05);
+        }
+        
+        .table-hover tbody tr:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+        
+        .table-primary,
+        .table-primary > th,
+        .table-primary > td {
+            background-color: #b8daff;
+        }
+        
+        .table-hover .table-primary:hover {
+            background-color: #9fcdff;
+        }
+        
+        .table-hover .table-primary:hover > td,
+        .table-hover .table-primary:hover > th {
+            background-color: #9fcdff;
+        }
+        
+        .table-secondary,
+        .table-secondary > th,
+        .table-secondary > td {
+            background-color: #d6d8db;
+        }
+        
+        .table-hover .table-secondary:hover {
+            background-color: #c8cbcf;
+        }
+        
+        .table-hover .table-secondary:hover > td,
+        .table-hover .table-secondary:hover > th {
+            background-color: #c8cbcf;
+        }
+        
+        .table-success,
+        .table-success > th,
+        .table-success > td {
+            background-color: #c3e6cb;
+        }
+        
+        .table-hover .table-success:hover {
+            background-color: #b1dfbb;
+        }
+        
+        .table-hover .table-success:hover > td,
+        .table-hover .table-success:hover > th {
+            background-color: #b1dfbb;
+        }
+        
+        .table-info,
+        .table-info > th,
+        .table-info > td {
+            background-color: #bee5eb;
+        }
+        
+        .table-hover .table-info:hover {
+            background-color: #abdde5;
+        }
+        
+        .table-hover .table-info:hover > td,
+        .table-hover .table-info:hover > th {
+            background-color: #abdde5;
+        }
+        
+        .table-warning,
+        .table-warning > th,
+        .table-warning > td {
+            background-color: #ffeeba;
+        }
+        
+        .table-hover .table-warning:hover {
+            background-color: #ffe8a1;
+        }
+        
+        .table-hover .table-warning:hover > td,
+        .table-hover .table-warning:hover > th {
+            background-color: #ffe8a1;
+        }
+        
+        .table-danger,
+        .table-danger > th,
+        .table-danger > td {
+            background-color: #f5c6cb;
+        }
+        
+        .table-hover .table-danger:hover {
+            background-color: #f1b0b7;
+        }
+        
+        .table-hover .table-danger:hover > td,
+        .table-hover .table-danger:hover > th {
+            background-color: #f1b0b7;
+        }
+        
+        .table-light,
+        .table-light > th,
+        .table-light > td {
+            background-color: #fdfdfe;
+        }
+        
+        .table-hover .table-light:hover {
+            background-color: #ececf6;
+        }
+        
+        .table-hover .table-light:hover > td,
+        .table-hover .table-light:hover > th {
+            background-color: #ececf6;
+        }
+        
+        .table-dark,
+        .table-dark > th,
+        .table-dark > td {
+            background-color: #c6c8ca;
+        }
+        
+        .table-hover .table-dark:hover {
+            background-color: #b9bbbe;
+        }
+        
+        .table-hover .table-dark:hover > td,
+        .table-hover .table-dark:hover > th {
+            background-color: #b9bbbe;
+        }
+        
+        .table-active,
+        .table-active > th,
+        .table-active > td {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+        
+        .table-hover .table-active:hover {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+        
+        .table-hover .table-active:hover > td,
+        .table-hover .table-active:hover > th {
+            background-color: rgba(0, 0, 0, 0.075);
+        }
+        
+        .table .thead-dark th {
+            color: #fff;
+            background-color: #212529;
+            border-color: #32383e;
+        }
+        
+        .table .thead-light th {
+            color: #495057;
+            background-color: #e9ecef;
+            border-color: #dee2e6;
+        }
+        
+        .table-dark {
+            color: #fff;
+            background-color: #212529;
+        }
+        
+        .table-dark th,
+        .table-dark td,
+        .table-dark thead th {
+            border-color: #32383e;
+        }
+        
+        .table-dark.table-bordered {
+            border: 0;
+        }
+        
+        .table-dark.table-striped tbody tr:nth-of-type(odd) {
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+        
+        .table-dark.table-hover tbody tr:hover {
+            background-color: rgba(255, 255, 255, 0.075);
+        }
+        
+        
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="top-bar">
+            <!-- Display current time and date -->
+            <div class="logo">
+                <img src="/static/LOGO_GOLD.jpg" alt="Logo">
+            </div>
+        </div>
+        <a href="#"><i class="fas fa-users"></i> Clients</a>
+        <a href="#"><i class="fas fa-sign-out-alt"></i> Logout</a>
+    </div>
+
+    <div class="content">
+        <!-- Page content goes here -->
+        <h2>Client's List</h2>
+        <p  align="right">
+            <button class="btn btn-primary add-button" data-toggle="modal" data-target="#addClientModal"><i class="fas fa-plus"></i> Add Client</button>
+        </p>
+        <table class="table table-striped" id="clientTable">
+            <thead>
+                <tr>
+                    <th>ClientID</th>
+                    <th>Client Name</th>
+                    <th>Mobile</th>
+                    <th>Date Of Joined</th>
+                    <th>Address</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="clientTableBody"> <!-- Ensure this tbody has the ID 'clientTableBody' -->
+                <!-- Client data will be dynamically inserted here -->
+            </tbody>
+        </table>
+    </div>
+    <!-- Add Client Modal -->
+<!-- Add Client Modal -->
+<div class="modal fade" id="addClientModal" tabindex="-1" role="dialog" aria-labelledby="addClientModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="addClientModalLabel">Add Client</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div id="banner" class="alert" role="alert" style="display: none;"></div>
+                <form id="addClientForm">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="first_name">First Name:</label>
+                                <input type="text" class="form-control" id="first_name" name="first_name" required>
+                                <div class="invalid-feedback">Please provide a first name.</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="last_name">Last Name:</label>
+                                <input type="text" class="form-control" id="last_name" name="last_name" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="address">Address:</label>
+                                <input type="text" class="form-control" id="address" name="address">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="mobile">Mobile:</label>
+                                <input type="tel" class="form-control" id="mobile" name="mobile" required>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email">Email:</label>
+                                <input type="email" class="form-control" id="email" name="email">
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="alternate_mobile">Alternate Mobile:</label>
+                                <input type="tel" class="form-control" id="alternate_mobile" name="alternate_mobile">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="gender">Gender:</label>
+                                <select class="form-control" id="gender" name="gender">
+                                    <option value="male">Male</option>
+                                    <option value="female">Female</option>
+                                    <option value="other">Other</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="addClientBtn">Add</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+    
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <!-- Font Awesome -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/js/all.min.js"></script>
+    <!-- DataTables JS -->
+    <script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+    <scriptd>
+        // Initialize DataTable for client table
+
+// Search functionality
+    $(document).ready(function() {
+        $('#clientTable').DataTable({
+            searching: true, // Enable searching/filtering
+            paging: true // Enable pagination
+        });
+        
+    // Function to handle form submission
+    function submitFormData() {
+        // Collect form data
+        const formData = new FormData(document.getElementById('addClientForm'));
+
+        // Convert FormData to JSON object
+        const jsonData = {};
+        // Check if all required fields are filled
+        // Check if all required fields are filled
+        let isValid = true;
+        formData.forEach((value, key) => {
+            if (value.trim() === '' && document.getElementById(key).hasAttribute('required')) {
+                isValid = false;
+                // Add CSS class to highlight the required field
+                document.getElementById(key).classList.add('required-field');
+                return;
+            } else {
+                // Remove CSS class if the field is filled
+                document.getElementById(key).classList.remove('required-field');
+            }
+            jsonData[key] = value;
+        });
+
+
+        if (!isValid) {
+            // Show a custom alert
+            const alertDiv = document.createElement('div');
+            alertDiv.classList.add('alert', 'alert-danger', 'custom-alert');
+            alertDiv.innerHTML = '<strong>Error!</strong> Please fill in all required fields.';
+            document.body.appendChild(alertDiv);
+
+            // Automatically remove the alert after 3 seconds
+            setTimeout(() => {
+                alertDiv.remove();
+            }, 3000);
+
+            return;
+        }
+
+
+        // Show success or failure banner
+        function showBanner(message, styleClass) {
+            const banner = document.getElementById('banner');
+            banner.textContent = message;
+            banner.className = `alert ${styleClass}`;
+            banner.style.display = 'block';
+        }
+        formData.forEach((value, key) => {
+            jsonData[key] = value;
+        });
+        console.log(JSON.stringify(jsonData));
+        const isSuccess = false;
+        // Send data to API using fetch
+        fetch('http://localhost:3000/add-client', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Handle error
+            console.error('data:', data);
+            // Show success banner
+            showBanner('Success! Client added successfully.', 'alert-success');
+            // Optionally, close the modal or show a success message
+            setTimeout(() => {
+                $('#addClientModal').modal('hide'); // Hide modal after 2 seconds
+            }, 2000);
+            document.getElementById('addClientForm').reset();
+        })
+        .catch(error => {
+                // Handle error
+            console.error('Error:', error);
+            // Show failure banner
+            showBanner('Failed to add client. Please try again.', 'alert-danger');
+            // Optionally, show an error message to the user
+        });
+
+        // Close the modal after showing the banner
+
+    }
+
+    // Event listener for the "Add" button
+    document.getElementById('addClientBtn').addEventListener('click', submitFormData);
+
+    // Function to fetch and display client data
+    function fetchAndDisplayClients() {
+        // Fetch data from the API endpoint
+        fetch('http://localhost:3000/get-clients')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Populate the table with the received data
+            console.log(data.client_list)
+            populateClientTable(data.client_list);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    }
+
+    // Function to populate the client table with data
+    function populateClientTable(data) {
+        const tableBody = document.getElementById('clientTableBody');
+        if (!tableBody) {
+            console.error("Table body element not found.");
+            return;
+        }
+        tableBody.innerHTML = ''; // Clear existing table rows
+
+        data.forEach(client => {
+            console.log(client)
+            const row = document.createElement('tr');
+            row.innerHTML = `
+            <td>${client.client_id}</td>
+            <td>${client.full_name}</td>
+            <td>${client.mobile_number}</td>
+            <td>${client.created_date}</td>
+            <td>${client.address}</td>
+            <td>
+                <button class="btn btn-primary view-details-btn" onclick="viewDetails(${client.client_id})">View Details</button>
+                <button class="btn btn-success add-payment-btn" onclick="addPayment(${client.client_id})">Add Payment</button>
+            </td>
+        `;
+        tableBody.appendChild(row);
+        });
+    }
+
+    // Fetch and display clients when the page loads
+    window.onload = fetchAndDisplayClients;
+</script>
+
+</body>
+</html>

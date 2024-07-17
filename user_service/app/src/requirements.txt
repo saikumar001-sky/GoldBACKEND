@@ -1,0 +1,45 @@
+alembic >=1.7.5
+fastapi >=0.73.0
+python-jose >=3.3.0
+cryptography>=36.0.1
+emails >=0.6
+passlib >=1.7.4
+bcrypt >=4.0.1
+tenacity >=8.0.1
+uvicorn >=0.17.4
+python-multipart >=0.0.5
+email-validator >=1.1.3
+requests >=2.27.1
+raven >=6.10.0
+gunicorn >=20.1.0
+psycopg2-binary >=2.9.3
+Jinja2 >=3.0.3
+SQLAlchemy >=1.4.31
+pytest >=6.2.5
+shortuuid >=1.0.8
+mysqlclient >=2.1.0
+PyMySQL>=1.0.2
+mysql>=0.0.3
+sqladmin>=0.1.11
+xlrd >=2.0.1
+fastapi-utils >=0.2.1
+APScheduler >=3.9.1.post1
+mypy >=0.931
+black >=21.12b0
+isort >=5.10.1
+autoflake >=1.4
+flake8 >=4.0.1
+pytest >=6.2.5
+sqlalchemy-stubs >=0.4
+pytest-cov >=3.0.0
+pymongo ==4.2.0
+fastapi_mail
+pandas>=1.5.2
+openpyxl>=3.0.10
+pymongo ==4.2.0
+boto3
+Pillow
+pydantic
+redis
+aioredis
+pyjwt

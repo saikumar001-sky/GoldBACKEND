@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Apply background gradient */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-image: url('static/logo9.png');
+            background-size: 50%; /* Increase the size of the background image */
+            background-repeat: no-repeat; /* Do not repeat the background image */
+            background-position: center; /* Center the background image */
+        }
+
+        /* Container for login form */
+        .container {
+            max-width: 400px;
+            padding: 40px;
+            background-color: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+            border-radius: 100px;
+            box-shadow: 0 0 30px rgba(200, 180, 20, 0.5);
+        }
+
+        /* Logo styles */
+        .logo {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .logo img {
+            width: 150px;
+            height: auto;
+            border-radius: 50%;
+            border: 5px solid rgba(200, 180, 20, 0.5); /* Gold border */
+            padding: 5px;
+        }
+
+        /* Form styles */
+        .form-group label {
+            font-weight: bold;
+            color: #333;
+        }
+
+        .form-group input[type="text"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #ffd700; /* Gold border */
+            background-color: #fff; /* White background */
+            border-radius: 25px;
+            transition: border-color 0.3s;
+            font-color:linear-gradient(to right bottom,#AA6C39, #f0e68c); /* Gradient from light gold to gold */
+        }
+
+        .form-group input[type="text"]:focus,
+        .form-group input[type="password"]:focus {
+            border-color: #ffdf00; /* Lighter gold color on focus */
+        }
+
+        .btn {
+            padding: 12px 24px; /* Increase padding for better touch experience */
+            background-color: #ffd700; /* Gold background color */
+            color: #fff; /* White text color */
+            border: none;
+            border-radius: px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            background-image: url('static/gold.jpeg');
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .btn:hover {
+            background-color: #ffdf00; /* Lighter gold color on hover */
+        }
+
+        .form-footer {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .form-footer a {
+            color: #333; /* Darker text color for links */
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        .form-footer a:hover {
+            color: #555; /* Slightly lighter text color on hover */
+        }
+
+        /* Modal styles */
+        .modal-content {
+            background-color: #fff;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .modal-header {
+            border-bottom: none;
+        }
+        .banner {
+            width: 100%;
+            text-align: center;
+            margin-bottom: 20px; /* Adjust spacing as needed */
+        }
+        
+        .alert {
+            width: 80%; /* Adjust width of the alert */
+            margin: auto; /* Center the alert horizontally */
+        }
+    </style>
+</head>
+<body>
+    <!-- Container for login form -->
+    <div class="container">
+        <!-- Banner for displaying messages -->
+        <div class="banner">
+            {% if is_valid_user == 2 or is_valid_user == 3 %}
+                <div class="alert alert-danger" role="alert">
+                    Your username or password is incorrect. Please try again.
+                </div>
+            {% endif %}
+        </div>
+        <div class="logo">
+            <img src="/static/LOGO_GOLD.jpg" alt="Logo">
+        </div>
+        <form action="/login" method="post" class="form">
+            <h2 class="text-center mb-4">Login</h2>
+            {% if error %}
+                <div class="alert alert-danger" role="alert">{{ error }}</div>
+            {% endif %}
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="text" id="username" name="username" class="form-control" required>
+            </div>
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" id="password" name="password" class="form-control" required>
+            </div>
+            <button type="submit" class="btn btn-block">Login</button>
+            <div class="form-footer mt-3">
+                <a href="/forgot-password">Forgot password?</a> | <a href="/signup">Sign up</a>
+            </div>
+        </form>
+    </div>
+    <script>
+        // Show modal dialog box for invalid credentials
+        $(document).ready(function() {
+            $('#invalidCredentialsModal').modal('show');
+        });        
+    </script>
+    <!-- Bootstrap JS -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

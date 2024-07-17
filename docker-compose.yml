@@ -1,0 +1,57 @@
+version: "3.9"
+services:
+  mysqld:
+    image: mysql:8.0
+    container_name: goldsales_db
+    volumes:
+      - goldsales-user-service-app-db-data:/var/lib/mysql
+    environment:
+      - MYSQL_DATABASE=gold_sales
+      - MYSQL_ROOT_PASSWORD=root
+      - MYSQL_USER=gold
+      - MYSQL_PASSWORD=gold
+      - SQLDATA=/var/lib/mysql
+    networks:
+      - goldsales-net
+    ports:
+      - "3308:3306"
+    restart: always
+    healthcheck:
+      test:  mysqladmin ping -proot
+      interval: 1m
+      timeout: 10s
+      retries: 15
+      start_period: 30s 
+  user_service_admin:
+    platform: linux/amd64
+    image: "${DOCKER_IMAGE_USER_SERVICE-user_service}:${TAG-latest}"
+    container_name: goldsales_user_service
+    env_file:
+      - user_service/.env
+    environment:
+      - MYSQL_HOST=goldsales_user_db
+      - PYTHONUNBUFFERED=1
+      - GUNICORN=1
+      - PORT=3000
+    links:
+      - mysqld
+    volumes:
+      - ./user_service/app:/app/
+    build:
+      context: ./user_service
+      dockerfile: user_service.dockerfile
+    networks:
+      - goldsales-net
+    ports:
+      - "1000:80"
+    depends_on:
+      mysqld:
+        condition: service_healthy
+    restart: always
+
+
+volumes:
+  goldsales-user-service-app-db-data:
+networks:
+  goldsales-net:
+    driver: bridge

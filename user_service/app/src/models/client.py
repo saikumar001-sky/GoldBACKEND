@@ -1,0 +1,27 @@
+from sqlalchemy import Column, Integer, String, DateTime,Date,Boolean
+from src.core.base_class import Base
+
+class Client(Base):
+    id = Column(Integer, primary_key=True)
+    client_id = Column(String(30),unique=True,index=True)
+    full_name = Column(String(150))
+    first_name = Column(String(60))
+    last_name = Column(String(60))
+    email_id = Column(String(50))
+    mobile_number = Column(String(20))
+    alter_mobile_number = Column(String(20))
+    adhaar_number= Column(String(12))
+    address = Column(String(455))
+    gender= Column(String(8))
+    dob= Column(Date)
+    martial_status= Column(String(10))
+    marriage_date= Column(Date)
+    spouse_name= Column(String(60))
+    spouse_mobile_number= Column(String(20))
+    spouse_adhaar_number= Column(String(12))
+    is_delete = Column(Boolean)
+    is_active = Column(Boolean)
+    created_by = Column(String(30))
+    created_date = Column(DateTime)
+    modified_by = Column(String(30))
+    modified_date = Column(DateTime)
